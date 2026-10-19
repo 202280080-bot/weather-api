@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #60a5fa, #1d4ed8);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: 0;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #eff6ff;
+            border-radius: 12px;
+        }
+        .temperature {
+            font-size: 42px;
+            font-weight: bold;
+            color: #1d4ed8;
+        }
+        .error { color: #b91c1c; }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <h1>Weather App</h1>
+        <p>Search the weather in your city.</p>
+        <form method="POST">
+            <input type="text" name="city"
+                   placeholder="Enter city, e.g. Manila"
+                   value="{{ city }}" required>
+            <button type="submit">Search Weather</button>
+        </form>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        {% if weather %}
+            <section class="result">
+                <h2>{{ weather.city }}, {{ weather.country }}</h2>
+                <div class="temperature">{{ weather.temperature }}°C</div>
+                <h3>{{ weather.description }}</h3>
+                <p>Feels like: {{ weather.feels_like }}°C</p>
+                <p>Humidity: {{ weather.humidity }}%</p>
+                <p>Wind speed: {{ weather.wind }} km/h</p>
+                <p>Local time: {{ weather.time }}</p>
+            </section>
+        {% endif %}
+    </main>
+</body>
+</html>
