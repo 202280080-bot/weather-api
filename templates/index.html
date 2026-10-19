@@ -3,8 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Weather App</title>
+    <meta name="description" content="Check the current weather in your city.">
+
+    <!-- PWA Settings -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="icon" href="{{ url_for('static', filename='weather-icon.svg') }}" type="image/svg+xml">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #60a5fa, #1d4ed8);
@@ -15,6 +29,7 @@
             margin: 0;
             padding: 20px;
         }
+
         .card {
             background: white;
             padding: 30px;
@@ -22,41 +37,90 @@
             width: 100%;
             max-width: 400px;
             text-align: center;
+            box-shadow: 0 8px 25px #0002;
         }
-        input, button {
+
+        h1 {
+            color: #1d4ed8;
+            margin-top: 0;
+        }
+
+        input,
+        button {
             width: 100%;
             padding: 12px;
             margin-top: 10px;
-            box-sizing: border-box;
+            border-radius: 8px;
+            font-size: 16px;
         }
+
+        input {
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+        }
+
         button {
             background: #2563eb;
             color: white;
-            border: 0;
+            border: none;
             cursor: pointer;
+            transition: background 0.2s;
         }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
         .result {
             margin-top: 20px;
             padding: 15px;
             background: #eff6ff;
             border-radius: 12px;
+            overflow-wrap: anywhere;
         }
+
         .temperature {
             font-size: 42px;
             font-weight: bold;
             color: #1d4ed8;
+            margin: 10px 0;
         }
-        .error { color: #b91c1c; }
+
+        .result h2 {
+            color: #1e3a8a;
+        }
+
+        .error {
+            color: #b91c1c;
+            margin-top: 15px;
+        }
+
+        .footer {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 20px;
+        }
     </style>
 </head>
+
 <body>
     <main class="card">
-        <h1>Weather App</h1>
+        <h1>🌤️ Weather App</h1>
         <p>Search the weather in your city.</p>
+
         <form method="POST">
-            <input type="text" name="city"
-                   placeholder="Enter city, e.g. Manila"
-                   value="{{ city }}" required>
+            <input
+                type="text"
+                name="city"
+                placeholder="Enter city, e.g. Manila"
+                value="{{ city }}"
+                aria-label="City name"
+                required
+            >
             <button type="submit">Search Weather</button>
         </form>
 
@@ -67,14 +131,46 @@
         {% if weather %}
             <section class="result">
                 <h2>{{ weather.city }}, {{ weather.country }}</h2>
-                <div class="temperature">{{ weather.temperature }}°C</div>
+
+                <div class="temperature">
+                    {{ weather.temperature }}°C
+                </div>
+
                 <h3>{{ weather.description }}</h3>
+
                 <p>Feels like: {{ weather.feels_like }}°C</p>
                 <p>Humidity: {{ weather.humidity }}%</p>
                 <p>Wind speed: {{ weather.wind }} km/h</p>
                 <p>Local time: {{ weather.time }}</p>
             </section>
         {% endif %}
+
+        <p class="footer">Weather information at your fingertips.</p>
     </main>
+
+    <!-- Register the PWA Service Worker -->
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", async () => {
+                try {
+                    const registration =
+                        await navigator.serviceWorker.register(
+                            "/service-worker.js",
+                            { scope: "/" }
+                        );
+
+                    console.log(
+                        "Service Worker registered:",
+                        registration.scope
+                    );
+                } catch (error) {
+                    console.error(
+                        "Service Worker registration failed:",
+                        error
+                    );
+                }
+            });
+        }
+    </script>
 </body>
 </html>

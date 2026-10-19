@@ -1,8 +1,16 @@
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 import requests
 
 app = Flask(__name__)
+
+@app.route("/service-worker.js")
+def service_worker():
+    return send_from_directory(
+        app.static_folder,
+        "service-worker.js",
+        mimetype="application/javascript"
+    )
 
 GEOCODING_URL = "https://geocoding-api.open-meteo.com/v1/search"
 WEATHER_URL = "https://api.open-meteo.com/v1/forecast"
